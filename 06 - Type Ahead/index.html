@@ -1,0 +1,77 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Type Ahead 👀</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <form class="search-form">
+    <input type="text" class="search" placeholder="City or State">
+    <ul class="suggestions">
+      <li>Filter for a city</li>
+      <li>or a state</li>
+    </ul>
+  </form>
+<script>
+const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+
+const cities=[];
+
+//spread values into an array
+fetch(endpoint)
+  .then(blob => blob.json())
+  .then(data => cities.push(...data));
+console.log(cities);
+
+let searchBarString='';
+const searchBar=document.querySelector('.search');
+
+
+//FUNCTION: to create a subset
+function findInArray(searchBarString){
+  //cycle through the array using map
+  let arrr=[];
+  let ar='';
+  let arr=cities.map(city => city.city.toLowerCase().includes(searchBarString.toLowerCase())|| city.state.toLowerCase().includes(searchBarString.toLowerCase())?arrr.push(city):1);
+  console.log(arrr);
+  displayElements(arrr);
+}
+
+//FUNCTION: to clear the currently present elements and add the values
+function displayElements(arrr){
+
+  let list = document.querySelector('.suggestions');
+  let listOldItems= list.innerHTML;
+  //clear elements
+  list.innerHTML=" ";
+
+  //iterate new elements
+
+  let test=arrr.map(ar => ar.city+", "+ar.state);
+  console.table(test);
+  let test1=test.map(ele => {
+      let entry=document.createElement('li');
+      entry.appendChild(document.createTextNode(ele));
+      list.appendChild(entry);
+  });
+  //list.innerHTML="<li>"+searchBarString+"</li>";
+
+
+}
+
+
+
+// EVENT: When user enters something in text bar
+searchBar.addEventListener("keyup",function(){
+  searchBarString = searchBar.value;
+  findInArray(searchBarString);
+});
+/*
+let list=document.querySelector('.suggestions');
+var entry=document.createElement('li');
+entry.appendChild(document.createTextNode('Re'));
+list.appendChild(entry);*/
+</script>
+  </body>
+</html>
